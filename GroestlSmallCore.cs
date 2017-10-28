@@ -1,47 +1,56 @@
-﻿// $Id: GroestlSmallCore.java 256 2011-07-15 19:07:16Z tp $
+// $Id: GroestlSmallCore.java 256 2011-07-15 19:07:16Z tp $
 
 using System;
-/**
-* This class implements Groestl-224 and Groestl-256.
-*
-* <pre>
-* ==========================(LICENSE BEGIN)============================
-*
-* Copyright (c) 2007-2010  Projet RNRT SAPHIR
-* 
-* Permission is hereby granted, free of charge, to any person obtaining
-* a copy of this software and associated documentation files (the
-* "Software"), to deal in the Software without restriction, including
-* without limitation the rights to use, copy, modify, merge, publish,
-* distribute, sublicense, and/or sell copies of the Software, and to
-* permit persons to whom the Software is furnished to do so, subject to
-* the following conditions:
-* 
-* The above copyright notice and this permission notice shall be
-* included in all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-* ===========================(LICENSE END)=============================
-* </pre>
-*
-* @version   $Revision: 256 $
-* @author    Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
-*/
-public abstract class GroestlSmallCore : DigestEngine
+
+namespace CryptoHash
 {
 
+/**
+ * This class implements Groestl-224 and Groestl-256.
+ *
+ * <pre>
+ * ==========================(LICENSE BEGIN)============================
+ *
+ * Copyright (c) 2007-2010  Projet RNRT SAPHIR
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * ===========================(LICENSE END)=============================
+ * </pre>
+ *
+ * @version   $Revision: 256 $
+ * @author    Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
+ */
+
+public abstract class GroestlSmallCore : DigestEngine {
 
   private ulong[] H, G, M;
 
+  /**
+   * Create the object.
+   */
+  public GroestlSmallCore()
+  {
+  }
 
-  private static readonly ulong[] T0 = {
+  private static readonly  ulong[] T0 = {
     0xc632f4a5f497a5c6L, 0xf86f978497eb84f8L,
     0xee5eb099b0c799eeL, 0xf67a8c8d8cf78df6L,
     0xffe8170d17e50dffL, 0xd60adcbddcb7bdd6L,
@@ -172,18 +181,16 @@ public abstract class GroestlSmallCore : DigestEngine
     0x6d0c61d661dad66dL, 0x2c624e3a4e583a2cL
   };
 
-  private static readonly ulong[] T1 = new ulong[T0.Length];
-  private static readonly ulong[] T2 = new ulong[T0.Length];
-  private static readonly ulong[] T3 = new ulong[T0.Length];
-  private static readonly ulong[] T4 = new ulong[T0.Length];
-  private static readonly ulong[] T5 = new ulong[T0.Length];
-  private static readonly ulong[] T6 = new ulong[T0.Length];
-  private static readonly ulong[] T7 = new ulong[T0.Length];
+  private static readonly  ulong[] T1 = new ulong[(uint)T0.Length];
+  private static readonly  ulong[] T2 = new ulong[(uint)T0.Length];
+  private static readonly  ulong[] T3 = new ulong[(uint)T0.Length];
+  private static readonly  ulong[] T4 = new ulong[(uint)T0.Length];
+  private static readonly  ulong[] T5 = new ulong[(uint)T0.Length];
+  private static readonly  ulong[] T6 = new ulong[(uint)T0.Length];
+  private static readonly  ulong[] T7 = new ulong[(uint)T0.Length];
 
-  static GroestlSmallCore()
-  {
-    for (int i = 0; i < T0.Length; i++)
-    {
+  static GroestlSmallCore() {
+    for (uint i = 0; i < (uint)T0.Length; i ++) {
       ulong v = T0[i];
       T1[i] = circularLeft(v, 56);
       T2[i] = circularLeft(v, 48);
@@ -191,34 +198,34 @@ public abstract class GroestlSmallCore : DigestEngine
       T4[i] = circularLeft(v, 32);
       T5[i] = circularLeft(v, 24);
       T6[i] = circularLeft(v, 16);
-      T7[i] = circularLeft(v, 8);
+      T7[i] = circularLeft(v,  8);
     }
   }
 
   /* obsolete
-	private static final long[] CP = {
-		0x0000000000000000L, 0x0100000000000000L,
-		0x0200000000000000L, 0x0300000000000000L,
-		0x0400000000000000L, 0x0500000000000000L,
-		0x0600000000000000L, 0x0700000000000000L,
-		0x0800000000000000L, 0x0900000000000000L,
-		0x0A00000000000000L, 0x0B00000000000000L,
-		0x0C00000000000000L, 0x0D00000000000000L
-	};
+  private static readonly  ulong[] CP = {
+    0x0000000000000000L, 0x0100000000000000L,
+    0x0200000000000000L, 0x0300000000000000L,
+    0x0400000000000000L, 0x0500000000000000L,
+    0x0600000000000000L, 0x0700000000000000L,
+    0x0800000000000000L, 0x0900000000000000L,
+    0x0A00000000000000L, 0x0B00000000000000L,
+    0x0C00000000000000L, 0x0D00000000000000L
+  };
 
-	private static final long[] CQ = {
-		0x00000000000000FFL, 0x00000000000000FEL,
-		0x00000000000000FDL, 0x00000000000000FCL,
-		0x00000000000000FBL, 0x00000000000000FAL,
-		0x00000000000000F9L, 0x00000000000000F8L,
-		0x00000000000000F7L, 0x00000000000000F6L,
-		0x00000000000000F5L, 0x00000000000000F4L,
-		0x00000000000000F3L, 0x00000000000000F2L
-	};
-	*/
+  private static readonly  ulong[] CQ = {
+    0x00000000000000FFL, 0x00000000000000FEL,
+    0x00000000000000FDL, 0x00000000000000FCL,
+    0x00000000000000FBL, 0x00000000000000FAL,
+    0x00000000000000F9L, 0x00000000000000F8L,
+    0x00000000000000F7L, 0x00000000000000F6L,
+    0x00000000000000F5L, 0x00000000000000F4L,
+    0x00000000000000F3L, 0x00000000000000F2L
+  };
+  */
 
   /** @see Digest */
-  public override int getBlockLength()
+  public override uint getBlockLength()
   {
     return 64;
   }
@@ -226,47 +233,44 @@ public abstract class GroestlSmallCore : DigestEngine
   /** @see DigestEngine */
   protected Digest copyState(GroestlSmallCore dst)
   {
-    Array.Copy(H, 0, dst.H, 0, H.Length);
+    Array.Copy(H, 0, dst.H, 0, (uint)H.Length);
     return base.copyState(dst);
   }
 
   /** @see DigestEngine */
   protected override void engineReset()
   {
-    for (int i = 0; i < 7; i++)
+    for (uint i = 0; i < 7; i ++)
       H[i] = 0L;
     H[7] = (ulong)(getDigestLength() << 3);
   }
 
   /** @see DigestEngine */
-  protected override void doPadding(byte[] output, int outputOffset)
+  protected override void doPadding(byte[] output, uint outputOffset)
   {
     byte[] buf = getBlockBuffer();
-    int ptr = flush();
-    buf[ptr++] = (byte)0x80;
+    uint ptr = flush();
+    buf[ptr ++] = (byte)0x80;
     ulong count = getBlockCount();
-    if (ptr <= 56)
-    {
-      for (int i = ptr; i < 56; i++)
+    if (ptr <= 56) {
+      for (uint i = ptr; i < 56; i ++)
         buf[i] = 0;
-      count++;
-    }
-    else
-    {
-      for (int i = ptr; i < 64; i++)
+      count ++;
+    } else {
+      for (uint i = ptr; i < 64; i ++)
         buf[i] = 0;
       processBlock(buf);
-      for (int i = 0; i < 56; i++)
+      for (uint i = 0; i < 56; i ++)
         buf[i] = 0;
       count += 2;
     }
     encodeBELong(count, buf, 56);
     processBlock(buf);
-    Array.Copy(H, 0, G, 0, H.Length);
+    Array.Copy(H, 0, G, 0, (uint)H.Length);
     doPermP(G);
-    for (int i = 0; i < 4; i++)
+    for (uint i = 0; i < 4; i ++)
       encodeBELong(H[i + 4] ^ G[i + 4], buf, 8 * i);
-    int outLen = getDigestLength();
+    uint outLen = getDigestLength();
     Array.Copy(buf, 32 - outLen,
       output, outputOffset, outLen);
   }
@@ -289,19 +293,16 @@ public abstract class GroestlSmallCore : DigestEngine
    * @param buf   the destination buffer
    * @param off   the destination offset
    */
-  private static void encodeBELong(ulong val, byte[] buf, int off)
+  private static  void encodeBELong(ulong val, byte[] buf, uint off)
   {
-    unchecked
-    {
-      buf[off + 0] = (byte)(val >> 56);
-      buf[off + 1] = (byte)(val >> 48);
-      buf[off + 2] = (byte)(val >> 40);
-      buf[off + 3] = (byte)(val >> 32);
-      buf[off + 4] = (byte)(val >> 24);
-      buf[off + 5] = (byte)(val >> 16);
-      buf[off + 6] = (byte)(val >> 8);
-      buf[off + 7] = (byte)val;
-    }
+    buf[(int)off + 0] = (byte)(val >> 56);
+    buf[(int)off + 1] = (byte)(val >> 48);
+    buf[(int)off + 2] = (byte)(val >> 40);
+    buf[(int)off + 3] = (byte)(val >> 32);
+    buf[(int)off + 4] = (byte)(val >> 24);
+    buf[(int)off + 5] = (byte)(val >> 16);
+    buf[(int)off + 6] = (byte)(val >> 8);
+    buf[(int)off + 7] = (byte)val;
   }
 
   /**
@@ -312,20 +313,16 @@ public abstract class GroestlSmallCore : DigestEngine
    * @param off   the source offset
    * @return  the decoded value
    */
-  private static ulong decodeBELong(byte[] buf, int off)
+  private static  ulong decodeBELong(byte[] buf, uint off)
   {
-    unchecked
-    {
-
-      return ((((ulong)(buf[off] & 0xFFUL)) << 56)
-            | (((ulong)(buf[off + 1] & 0xFFUL)) << 48)
-            | (((ulong)(buf[off + 2] & 0xFFUL)) << 40)
-            | (((ulong)(buf[off + 3] & 0xFFUL)) << 32)
-            | (((ulong)(buf[off + 4] & 0xFFUL)) << 24)
-            | (((ulong)(buf[off + 5] & 0xFFUL)) << 16)
-            | (((ulong)(buf[off + 6] & 0xFFUL)) << 8)
-            | ((ulong)(buf[off + 7] & 0xFFUL)));
-    }
+    return ((((ulong)(buf[(int)off])) & 0xFFUL) << 56)
+      | ((((ulong)(buf[(int)off + 1])) & 0xFFUL) << 48)
+      | ((((ulong)(buf[(int)off + 2])) & 0xFFUL) << 40)
+      | ((((ulong)(buf[(int)off + 3])) & 0xFFUL) << 32)
+      | ((((ulong)(buf[(int)off + 4])) & 0xFFUL) << 24)
+      | ((((ulong)(buf[(int)off + 5])) & 0xFFUL) << 16)
+      | ((((ulong)(buf[(int)off + 6])) & 0xFFUL) << 8)
+      | (((ulong)(buf[(int)off + 7])) & 0xFFUL);
   }
 
   /**
@@ -336,332 +333,322 @@ public abstract class GroestlSmallCore : DigestEngine
    * @param x   the value to rotate
    * @param n   the rotation count (between 1 and 63)
    * @return  the rotated value
-*/
-  static ulong circularLeft(ulong x, int n)
+  */
+  static private ulong circularLeft(ulong x, uint n)
   {
-    return (x << n) | (x >> (64 - n));
+    return (x << (int)n) | (((ulong)x) >> (64 - (int)n));
   }
 
   private void doPermP(ulong[] x)
   {
-    unchecked // unsure
-    {
-
-      for (int r = 0; r < 10; r += 2)
-      {
-        x[0] ^= (ulong)(r) << 56;
-        x[1] ^= (ulong)(0x10 + r) << 56;
-        x[2] ^= (ulong)(0x20 + r) << 56;
-        x[3] ^= (ulong)(0x30 + r) << 56;
-        x[4] ^= (ulong)(0x40 + r) << 56;
-        x[5] ^= (ulong)(0x50 + r) << 56;
-        x[6] ^= (ulong)(0x60 + r) << 56;
-        x[7] ^= (ulong)(0x70 + r) << 56;
-        ulong t0 = T0[(uint)(x[0] >> 56)]
-          ^ T1[(uint)(x[1] >> 48) & 0xFF]
-          ^ T2[(uint)(x[2] >> 40) & 0xFF]
-          ^ T3[(uint)(x[3] >> 32) & 0xFF]
-          ^ T4[((uint)x[4] >> 24)]
-          ^ T5[((uint)x[5] >> 16) & 0xFF]
-          ^ T6[((uint)x[6] >> 8) & 0xFF]
-          ^ T7[(uint)x[7] & 0xFF];
-        ulong t1 = T0[(uint)(x[1] >> 56)]
-          ^ T1[(uint)(x[2] >> 48) & 0xFF]
-          ^ T2[(uint)(x[3] >> 40) & 0xFF]
-          ^ T3[(uint)(x[4] >> 32) & 0xFF]
-          ^ T4[((uint)x[5] >> 24)]
-          ^ T5[((uint)x[6] >> 16) & 0xFF]
-          ^ T6[((uint)x[7] >> 8) & 0xFF]
-          ^ T7[(uint)x[0] & 0xFF];
-        ulong t2 = T0[(uint)(x[2] >> 56)]
-          ^ T1[(uint)(x[3] >> 48) & 0xFF]
-          ^ T2[(uint)(x[4] >> 40) & 0xFF]
-          ^ T3[(uint)(x[5] >> 32) & 0xFF]
-          ^ T4[((uint)x[6] >> 24)]
-          ^ T5[((uint)x[7] >> 16) & 0xFF]
-          ^ T6[((uint)x[0] >> 8) & 0xFF]
-          ^ T7[(uint)x[1] & 0xFF];
-        ulong t3 = T0[(uint)(x[3] >> 56)]
-          ^ T1[(uint)(x[4] >> 48) & 0xFF]
-          ^ T2[(uint)(x[5] >> 40) & 0xFF]
-          ^ T3[(uint)(x[6] >> 32) & 0xFF]
-          ^ T4[((uint)x[7] >> 24)]
-          ^ T5[((uint)x[0] >> 16) & 0xFF]
-          ^ T6[((uint)x[1] >> 8) & 0xFF]
-          ^ T7[(uint)x[2] & 0xFF];
-        ulong t4 = T0[(uint)(x[4] >> 56)]
-          ^ T1[(uint)(x[5] >> 48) & 0xFF]
-          ^ T2[(uint)(x[6] >> 40) & 0xFF]
-          ^ T3[(uint)(x[7] >> 32) & 0xFF]
-          ^ T4[((uint)x[0] >> 24)]
-          ^ T5[((uint)x[1] >> 16) & 0xFF]
-          ^ T6[((uint)x[2] >> 8) & 0xFF]
-          ^ T7[(uint)x[3] & 0xFF];
-        ulong t5 = T0[(uint)(x[5] >> 56)]
-          ^ T1[(uint)(x[6] >> 48) & 0xFF]
-          ^ T2[(uint)(x[7] >> 40) & 0xFF]
-          ^ T3[(uint)(x[0] >> 32) & 0xFF]
-          ^ T4[((uint)x[1] >> 24)]
-          ^ T5[((uint)x[2] >> 16) & 0xFF]
-          ^ T6[((uint)x[3] >> 8) & 0xFF]
-          ^ T7[(uint)x[4] & 0xFF];
-        ulong t6 = T0[(uint)(x[6] >> 56)]
-          ^ T1[(uint)(x[7] >> 48) & 0xFF]
-          ^ T2[(uint)(x[0] >> 40) & 0xFF]
-          ^ T3[(uint)(x[1] >> 32) & 0xFF]
-          ^ T4[((uint)x[2] >> 24)]
-          ^ T5[((uint)x[3] >> 16) & 0xFF]
-          ^ T6[((uint)x[4] >> 8) & 0xFF]
-          ^ T7[(uint)x[5] & 0xFF];
-        ulong t7 = T0[(uint)(x[7] >> 56)]
-          ^ T1[(uint)(x[0] >> 48) & 0xFF]
-          ^ T2[(uint)(x[1] >> 40) & 0xFF]
-          ^ T3[(uint)(x[2] >> 32) & 0xFF]
-          ^ T4[((uint)x[3] >> 24)]
-          ^ T5[((uint)x[4] >> 16) & 0xFF]
-          ^ T6[((uint)x[5] >> 8) & 0xFF]
-          ^ T7[(uint)x[6] & 0xFF];
-        t0 ^= (ulong)(r + 1) << 56;
-        t1 ^= (ulong)(0x10 + (r + 1)) << 56;
-        t2 ^= (ulong)(0x20 + (r + 1)) << 56;
-        t3 ^= (ulong)(0x30 + (r + 1)) << 56;
-        t4 ^= (ulong)(0x40 + (r + 1)) << 56;
-        t5 ^= (ulong)(0x50 + (r + 1)) << 56;
-        t6 ^= (ulong)(0x60 + (r + 1)) << 56;
-        t7 ^= (ulong)(0x70 + (r + 1)) << 56;
-        x[0] = T0[(uint)(t0 >> 56)]
-          ^ T1[(uint)(t1 >> 48) & 0xFF]
-          ^ T2[(uint)(t2 >> 40) & 0xFF]
-          ^ T3[(uint)(t3 >> 32) & 0xFF]
-          ^ T4[((uint)t4 >> 24)]
-          ^ T5[((uint)t5 >> 16) & 0xFF]
-          ^ T6[((uint)t6 >> 8) & 0xFF]
-          ^ T7[(uint)t7 & 0xFF];
-        x[1] = T0[(uint)(t1 >> 56)]
-          ^ T1[(uint)(t2 >> 48) & 0xFF]
-          ^ T2[(uint)(t3 >> 40) & 0xFF]
-          ^ T3[(uint)(t4 >> 32) & 0xFF]
-          ^ T4[((uint)t5 >> 24)]
-          ^ T5[((uint)t6 >> 16) & 0xFF]
-          ^ T6[((uint)t7 >> 8) & 0xFF]
-          ^ T7[(uint)t0 & 0xFF];
-        x[2] = T0[(uint)(t2 >> 56)]
-          ^ T1[(uint)(t3 >> 48) & 0xFF]
-          ^ T2[(uint)(t4 >> 40) & 0xFF]
-          ^ T3[(uint)(t5 >> 32) & 0xFF]
-          ^ T4[((uint)t6 >> 24)]
-          ^ T5[((uint)t7 >> 16) & 0xFF]
-          ^ T6[((uint)t0 >> 8) & 0xFF]
-          ^ T7[(uint)t1 & 0xFF];
-        x[3] = T0[(uint)(t3 >> 56)]
-          ^ T1[(uint)(t4 >> 48) & 0xFF]
-          ^ T2[(uint)(t5 >> 40) & 0xFF]
-          ^ T3[(uint)(t6 >> 32) & 0xFF]
-          ^ T4[((uint)t7 >> 24)]
-          ^ T5[((uint)t0 >> 16) & 0xFF]
-          ^ T6[((uint)t1 >> 8) & 0xFF]
-          ^ T7[(uint)t2 & 0xFF];
-        x[4] = T0[(uint)(t4 >> 56)]
-          ^ T1[(uint)(t5 >> 48) & 0xFF]
-          ^ T2[(uint)(t6 >> 40) & 0xFF]
-          ^ T3[(uint)(t7 >> 32) & 0xFF]
-          ^ T4[((uint)t0 >> 24)]
-          ^ T5[((uint)t1 >> 16) & 0xFF]
-          ^ T6[((uint)t2 >> 8) & 0xFF]
-          ^ T7[(uint)t3 & 0xFF];
-        x[5] = T0[(uint)(t5 >> 56)]
-          ^ T1[(uint)(t6 >> 48) & 0xFF]
-          ^ T2[(uint)(t7 >> 40) & 0xFF]
-          ^ T3[(uint)(t0 >> 32) & 0xFF]
-          ^ T4[((uint)t1 >> 24)]
-          ^ T5[((uint)t2 >> 16) & 0xFF]
-          ^ T6[((uint)t3 >> 8) & 0xFF]
-          ^ T7[(uint)t4 & 0xFF];
-        x[6] = T0[(uint)(t6 >> 56)]
-          ^ T1[(uint)(t7 >> 48) & 0xFF]
-          ^ T2[(uint)(t0 >> 40) & 0xFF]
-          ^ T3[(uint)(t1 >> 32) & 0xFF]
-          ^ T4[((uint)t2 >> 24)]
-          ^ T5[((uint)t3 >> 16) & 0xFF]
-          ^ T6[((uint)t4 >> 8) & 0xFF]
-          ^ T7[(uint)t5 & 0xFF];
-        x[7] = T0[(uint)(t7 >> 56)]
-          ^ T1[(uint)(t0 >> 48) & 0xFF]
-          ^ T2[(uint)(t1 >> 40) & 0xFF]
-          ^ T3[(uint)(t2 >> 32) & 0xFF]
-          ^ T4[((uint)t3 >> 24)]
-          ^ T5[((uint)t4 >> 16) & 0xFF]
-          ^ T6[((uint)t5 >> 8) & 0xFF]
-          ^ T7[(uint)t6 & 0xFF];
-      }
+    for (uint r = 0; r < 10; r += 2) {
+      x[0] ^= (ulong)(r) << 56;
+      x[1] ^= (ulong)(0x10 + r) << 56;
+      x[2] ^= (ulong)(0x20 + r) << 56;
+      x[3] ^= (ulong)(0x30 + r) << 56;
+      x[4] ^= (ulong)(0x40 + r) << 56;
+      x[5] ^= (ulong)(0x50 + r) << 56;
+      x[6] ^= (ulong)(0x60 + r) << 56;
+      x[7] ^= (ulong)(0x70 + r) << 56;
+      ulong t0 = T0[(uint)(x[0] >> 56)]
+        ^ T1[(uint)(x[1] >> 48) & 0xFF]
+        ^ T2[(uint)(x[2] >> 40) & 0xFF]
+        ^ T3[(uint)(x[3] >> 32) & 0xFF]
+        ^ T4[((uint)x[4] >> 24)]
+        ^ T5[((uint)x[5] >> 16) & 0xFF]
+        ^ T6[((uint)x[6] >> 8) & 0xFF]
+        ^ T7[(uint)x[7] & 0xFF];
+      ulong t1 = T0[(uint)(x[1] >> 56)]
+        ^ T1[(uint)(x[2] >> 48) & 0xFF]
+        ^ T2[(uint)(x[3] >> 40) & 0xFF]
+        ^ T3[(uint)(x[4] >> 32) & 0xFF]
+        ^ T4[((uint)x[5] >> 24)]
+        ^ T5[((uint)x[6] >> 16) & 0xFF]
+        ^ T6[((uint)x[7] >> 8) & 0xFF]
+        ^ T7[(uint)x[0] & 0xFF];
+      ulong t2 = T0[(uint)(x[2] >> 56)]
+        ^ T1[(uint)(x[3] >> 48) & 0xFF]
+        ^ T2[(uint)(x[4] >> 40) & 0xFF]
+        ^ T3[(uint)(x[5] >> 32) & 0xFF]
+        ^ T4[((uint)x[6] >> 24)]
+        ^ T5[((uint)x[7] >> 16) & 0xFF]
+        ^ T6[((uint)x[0] >> 8) & 0xFF]
+        ^ T7[(uint)x[1] & 0xFF];
+      ulong t3 = T0[(uint)(x[3] >> 56)]
+        ^ T1[(uint)(x[4] >> 48) & 0xFF]
+        ^ T2[(uint)(x[5] >> 40) & 0xFF]
+        ^ T3[(uint)(x[6] >> 32) & 0xFF]
+        ^ T4[((uint)x[7] >> 24)]
+        ^ T5[((uint)x[0] >> 16) & 0xFF]
+        ^ T6[((uint)x[1] >> 8) & 0xFF]
+        ^ T7[(uint)x[2] & 0xFF];
+      ulong t4 = T0[(uint)(x[4] >> 56)]
+        ^ T1[(uint)(x[5] >> 48) & 0xFF]
+        ^ T2[(uint)(x[6] >> 40) & 0xFF]
+        ^ T3[(uint)(x[7] >> 32) & 0xFF]
+        ^ T4[((uint)x[0] >> 24)]
+        ^ T5[((uint)x[1] >> 16) & 0xFF]
+        ^ T6[((uint)x[2] >> 8) & 0xFF]
+        ^ T7[(uint)x[3] & 0xFF];
+      ulong t5 = T0[(uint)(x[5] >> 56)]
+        ^ T1[(uint)(x[6] >> 48) & 0xFF]
+        ^ T2[(uint)(x[7] >> 40) & 0xFF]
+        ^ T3[(uint)(x[0] >> 32) & 0xFF]
+        ^ T4[((uint)x[1] >> 24)]
+        ^ T5[((uint)x[2] >> 16) & 0xFF]
+        ^ T6[((uint)x[3] >> 8) & 0xFF]
+        ^ T7[(uint)x[4] & 0xFF];
+      ulong t6 = T0[(uint)(x[6] >> 56)]
+        ^ T1[(uint)(x[7] >> 48) & 0xFF]
+        ^ T2[(uint)(x[0] >> 40) & 0xFF]
+        ^ T3[(uint)(x[1] >> 32) & 0xFF]
+        ^ T4[((uint)x[2] >> 24)]
+        ^ T5[((uint)x[3] >> 16) & 0xFF]
+        ^ T6[((uint)x[4] >> 8) & 0xFF]
+        ^ T7[(uint)x[5] & 0xFF];
+      ulong t7 = T0[(uint)(x[7] >> 56)]
+        ^ T1[(uint)(x[0] >> 48) & 0xFF]
+        ^ T2[(uint)(x[1] >> 40) & 0xFF]
+        ^ T3[(uint)(x[2] >> 32) & 0xFF]
+        ^ T4[((uint)x[3] >> 24)]
+        ^ T5[((uint)x[4] >> 16) & 0xFF]
+        ^ T6[((uint)x[5] >> 8) & 0xFF]
+        ^ T7[(uint)x[6] & 0xFF];
+      t0 ^= (ulong)(r + 1) << 56;
+      t1 ^= (ulong)(0x10 + (r + 1)) << 56;
+      t2 ^= (ulong)(0x20 + (r + 1)) << 56;
+      t3 ^= (ulong)(0x30 + (r + 1)) << 56;
+      t4 ^= (ulong)(0x40 + (r + 1)) << 56;
+      t5 ^= (ulong)(0x50 + (r + 1)) << 56;
+      t6 ^= (ulong)(0x60 + (r + 1)) << 56;
+      t7 ^= (ulong)(0x70 + (r + 1)) << 56;
+      x[0] = T0[(uint)(t0 >> 56)]
+        ^ T1[(uint)(t1 >> 48) & 0xFF]
+        ^ T2[(uint)(t2 >> 40) & 0xFF]
+        ^ T3[(uint)(t3 >> 32) & 0xFF]
+        ^ T4[((uint)t4 >> 24)]
+        ^ T5[((uint)t5 >> 16) & 0xFF]
+        ^ T6[((uint)t6 >> 8) & 0xFF]
+        ^ T7[(uint)t7 & 0xFF];
+      x[1] = T0[(uint)(t1 >> 56)]
+        ^ T1[(uint)(t2 >> 48) & 0xFF]
+        ^ T2[(uint)(t3 >> 40) & 0xFF]
+        ^ T3[(uint)(t4 >> 32) & 0xFF]
+        ^ T4[((uint)t5 >> 24)]
+        ^ T5[((uint)t6 >> 16) & 0xFF]
+        ^ T6[((uint)t7 >> 8) & 0xFF]
+        ^ T7[(uint)t0 & 0xFF];
+      x[2] = T0[(uint)(t2 >> 56)]
+        ^ T1[(uint)(t3 >> 48) & 0xFF]
+        ^ T2[(uint)(t4 >> 40) & 0xFF]
+        ^ T3[(uint)(t5 >> 32) & 0xFF]
+        ^ T4[((uint)t6 >> 24)]
+        ^ T5[((uint)t7 >> 16) & 0xFF]
+        ^ T6[((uint)t0 >> 8) & 0xFF]
+        ^ T7[(uint)t1 & 0xFF];
+      x[3] = T0[(uint)(t3 >> 56)]
+        ^ T1[(uint)(t4 >> 48) & 0xFF]
+        ^ T2[(uint)(t5 >> 40) & 0xFF]
+        ^ T3[(uint)(t6 >> 32) & 0xFF]
+        ^ T4[((uint)t7 >> 24)]
+        ^ T5[((uint)t0 >> 16) & 0xFF]
+        ^ T6[((uint)t1 >> 8) & 0xFF]
+        ^ T7[(uint)t2 & 0xFF];
+      x[4] = T0[(uint)(t4 >> 56)]
+        ^ T1[(uint)(t5 >> 48) & 0xFF]
+        ^ T2[(uint)(t6 >> 40) & 0xFF]
+        ^ T3[(uint)(t7 >> 32) & 0xFF]
+        ^ T4[((uint)t0 >> 24)]
+        ^ T5[((uint)t1 >> 16) & 0xFF]
+        ^ T6[((uint)t2 >> 8) & 0xFF]
+        ^ T7[(uint)t3 & 0xFF];
+      x[5] = T0[(uint)(t5 >> 56)]
+        ^ T1[(uint)(t6 >> 48) & 0xFF]
+        ^ T2[(uint)(t7 >> 40) & 0xFF]
+        ^ T3[(uint)(t0 >> 32) & 0xFF]
+        ^ T4[((uint)t1 >> 24)]
+        ^ T5[((uint)t2 >> 16) & 0xFF]
+        ^ T6[((uint)t3 >> 8) & 0xFF]
+        ^ T7[(uint)t4 & 0xFF];
+      x[6] = T0[(uint)(t6 >> 56)]
+        ^ T1[(uint)(t7 >> 48) & 0xFF]
+        ^ T2[(uint)(t0 >> 40) & 0xFF]
+        ^ T3[(uint)(t1 >> 32) & 0xFF]
+        ^ T4[((uint)t2 >> 24)]
+        ^ T5[((uint)t3 >> 16) & 0xFF]
+        ^ T6[((uint)t4 >> 8) & 0xFF]
+        ^ T7[(uint)t5 & 0xFF];
+      x[7] = T0[(uint)(t7 >> 56)]
+        ^ T1[(uint)(t0 >> 48) & 0xFF]
+        ^ T2[(uint)(t1 >> 40) & 0xFF]
+        ^ T3[(uint)(t2 >> 32) & 0xFF]
+        ^ T4[((uint)t3 >> 24)]
+        ^ T5[((uint)t4 >> 16) & 0xFF]
+        ^ T6[((uint)t5 >> 8) & 0xFF]
+        ^ T7[(uint)t6 & 0xFF];
     }
   }
 
   private void doPermQ(ulong[] x)
   {
-    unchecked
-    {
-      for (ulong r = 0; r < 10; r += 2)
-      {
-        x[0] ^= (ulong)(r ^ (ulong)-0x01L);
-        x[1] ^= (ulong)(r ^ (ulong)-0x11L);
-        x[2] ^= (ulong)(r ^ (ulong)-0x21L);
-        x[3] ^= (ulong)(r ^ (ulong)-0x31L);
-        x[4] ^= (ulong)(r ^ (ulong)-0x41L);
-        x[5] ^= (ulong)(r ^ (ulong)-0x51L);
-        x[6] ^= (ulong)(r ^ (ulong)-0x61L);
-        x[7] ^= (ulong)(r ^ (ulong)-0x71L);
-        ulong t0 = T0[(uint)(x[1] >> 56)]
-          ^ T1[(uint)(x[3] >> 48) & 0xFF]
-          ^ T2[(uint)(x[5] >> 40) & 0xFF]
-          ^ T3[(uint)(x[7] >> 32) & 0xFF]
-          ^ T4[((uint)x[0] >> 24)]
-          ^ T5[((uint)x[2] >> 16) & 0xFF]
-          ^ T6[((uint)x[4] >> 8) & 0xFF]
-          ^ T7[(uint)x[6] & 0xFF];
-        ulong t1 = T0[(uint)(x[2] >> 56)]
-          ^ T1[(uint)(x[4] >> 48) & 0xFF]
-          ^ T2[(uint)(x[6] >> 40) & 0xFF]
-          ^ T3[(uint)(x[0] >> 32) & 0xFF]
-          ^ T4[((uint)x[1] >> 24)]
-          ^ T5[((uint)x[3] >> 16) & 0xFF]
-          ^ T6[((uint)x[5] >> 8) & 0xFF]
-          ^ T7[(uint)x[7] & 0xFF];
-        ulong t2 = T0[(uint)(x[3] >> 56)]
-          ^ T1[(uint)(x[5] >> 48) & 0xFF]
-          ^ T2[(uint)(x[7] >> 40) & 0xFF]
-          ^ T3[(uint)(x[1] >> 32) & 0xFF]
-          ^ T4[((uint)x[2] >> 24)]
-          ^ T5[((uint)x[4] >> 16) & 0xFF]
-          ^ T6[((uint)x[6] >> 8) & 0xFF]
-          ^ T7[(uint)x[0] & 0xFF];
-        ulong t3 = T0[(uint)(x[4] >> 56)]
-          ^ T1[(uint)(x[6] >> 48) & 0xFF]
-          ^ T2[(uint)(x[0] >> 40) & 0xFF]
-          ^ T3[(uint)(x[2] >> 32) & 0xFF]
-          ^ T4[((uint)x[3] >> 24)]
-          ^ T5[((uint)x[5] >> 16) & 0xFF]
-          ^ T6[((uint)x[7] >> 8) & 0xFF]
-          ^ T7[(uint)x[1] & 0xFF];
-        ulong t4 = T0[(uint)(x[5] >> 56)]
-          ^ T1[(uint)(x[7] >> 48) & 0xFF]
-          ^ T2[(uint)(x[1] >> 40) & 0xFF]
-          ^ T3[(uint)(x[3] >> 32) & 0xFF]
-          ^ T4[((uint)x[4] >> 24)]
-          ^ T5[((uint)x[6] >> 16) & 0xFF]
-          ^ T6[((uint)x[0] >> 8) & 0xFF]
-          ^ T7[(uint)x[2] & 0xFF];
-        ulong t5 = T0[(uint)(x[6] >> 56)]
-          ^ T1[(uint)(x[0] >> 48) & 0xFF]
-          ^ T2[(uint)(x[2] >> 40) & 0xFF]
-          ^ T3[(uint)(x[4] >> 32) & 0xFF]
-          ^ T4[((uint)x[5] >> 24)]
-          ^ T5[((uint)x[7] >> 16) & 0xFF]
-          ^ T6[((uint)x[1] >> 8) & 0xFF]
-          ^ T7[(uint)x[3] & 0xFF];
-        ulong t6 = T0[(uint)(x[7] >> 56)]
-          ^ T1[(uint)(x[1] >> 48) & 0xFF]
-          ^ T2[(uint)(x[3] >> 40) & 0xFF]
-          ^ T3[(uint)(x[5] >> 32) & 0xFF]
-          ^ T4[((uint)x[6] >> 24)]
-          ^ T5[((uint)x[0] >> 16) & 0xFF]
-          ^ T6[((uint)x[2] >> 8) & 0xFF]
-          ^ T7[(uint)x[4] & 0xFF];
-        ulong t7 = T0[(uint)(x[0] >> 56)]
-          ^ T1[(uint)(x[2] >> 48) & 0xFF]
-          ^ T2[(uint)(x[4] >> 40) & 0xFF]
-          ^ T3[(uint)(x[6] >> 32) & 0xFF]
-          ^ T4[((uint)x[7] >> 24)]
-          ^ T5[((uint)x[1] >> 16) & 0xFF]
-          ^ T6[((uint)x[3] >> 8) & 0xFF]
-          ^ T7[(uint)x[5] & 0xFF];
-        t0 ^= (ulong)((ulong)(r + 1) ^ (ulong)-0x01L);
-        t1 ^= (ulong)((ulong)(r + 1) ^ (ulong)-0x11L);
-        t2 ^= (ulong)((ulong)(r + 1) ^ (ulong)-0x21L);
-        t3 ^= (ulong)((ulong)(r + 1) ^ (ulong)-0x31L);
-        t4 ^= (ulong)((ulong)(r + 1) ^ (ulong)-0x41L);
-        t5 ^= (ulong)((ulong)(r + 1) ^ (ulong)-0x51L);
-        t6 ^= (ulong)((ulong)(r + 1) ^ (ulong)-0x61L);
-        t7 ^= (ulong)((ulong)(r + 1) ^ (ulong)-0x71L);
-        x[0] = T0[(uint)(t1 >> 56)]
-          ^ T1[(uint)(t3 >> 48) & 0xFF]
-          ^ T2[(uint)(t5 >> 40) & 0xFF]
-          ^ T3[(uint)(t7 >> 32) & 0xFF]
-          ^ T4[((uint)t0 >> 24)]
-          ^ T5[((uint)t2 >> 16) & 0xFF]
-          ^ T6[((uint)t4 >> 8) & 0xFF]
-          ^ T7[(uint)t6 & 0xFF];
-        x[1] = T0[(uint)(t2 >> 56)]
-          ^ T1[(uint)(t4 >> 48) & 0xFF]
-          ^ T2[(uint)(t6 >> 40) & 0xFF]
-          ^ T3[(uint)(t0 >> 32) & 0xFF]
-          ^ T4[((uint)t1 >> 24)]
-          ^ T5[((uint)t3 >> 16) & 0xFF]
-          ^ T6[((uint)t5 >> 8) & 0xFF]
-          ^ T7[(uint)t7 & 0xFF];
-        x[2] = T0[(uint)(t3 >> 56)]
-          ^ T1[(uint)(t5 >> 48) & 0xFF]
-          ^ T2[(uint)(t7 >> 40) & 0xFF]
-          ^ T3[(uint)(t1 >> 32) & 0xFF]
-          ^ T4[((uint)t2 >> 24)]
-          ^ T5[((uint)t4 >> 16) & 0xFF]
-          ^ T6[((uint)t6 >> 8) & 0xFF]
-          ^ T7[(uint)t0 & 0xFF];
-        x[3] = T0[(uint)(t4 >> 56)]
-          ^ T1[(uint)(t6 >> 48) & 0xFF]
-          ^ T2[(uint)(t0 >> 40) & 0xFF]
-          ^ T3[(uint)(t2 >> 32) & 0xFF]
-          ^ T4[((uint)t3 >> 24)]
-          ^ T5[((uint)t5 >> 16) & 0xFF]
-          ^ T6[((uint)t7 >> 8) & 0xFF]
-          ^ T7[(uint)t1 & 0xFF];
-        x[4] = T0[(uint)(t5 >> 56)]
-          ^ T1[(uint)(t7 >> 48) & 0xFF]
-          ^ T2[(uint)(t1 >> 40) & 0xFF]
-          ^ T3[(uint)(t3 >> 32) & 0xFF]
-          ^ T4[((uint)t4 >> 24)]
-          ^ T5[((uint)t6 >> 16) & 0xFF]
-          ^ T6[((uint)t0 >> 8) & 0xFF]
-          ^ T7[(uint)t2 & 0xFF];
-        x[5] = T0[(uint)(t6 >> 56)]
-          ^ T1[(uint)(t0 >> 48) & 0xFF]
-          ^ T2[(uint)(t2 >> 40) & 0xFF]
-          ^ T3[(uint)(t4 >> 32) & 0xFF]
-          ^ T4[((uint)t5 >> 24)]
-          ^ T5[((uint)t7 >> 16) & 0xFF]
-          ^ T6[((uint)t1 >> 8) & 0xFF]
-          ^ T7[(uint)t3 & 0xFF];
-        x[6] = T0[(uint)(t7 >> 56)]
-          ^ T1[(uint)(t1 >> 48) & 0xFF]
-          ^ T2[(uint)(t3 >> 40) & 0xFF]
-          ^ T3[(uint)(t5 >> 32) & 0xFF]
-          ^ T4[((uint)t6 >> 24)]
-          ^ T5[((uint)t0 >> 16) & 0xFF]
-          ^ T6[((uint)t2 >> 8) & 0xFF]
-          ^ T7[(uint)t4 & 0xFF];
-        x[7] = T0[(uint)(t0 >> 56)]
-          ^ T1[(uint)(t2 >> 48) & 0xFF]
-          ^ T2[(uint)(t4 >> 40) & 0xFF]
-          ^ T3[(uint)(t6 >> 32) & 0xFF]
-          ^ T4[((uint)t7 >> 24)]
-          ^ T5[((uint)t1 >> 16) & 0xFF]
-          ^ T6[((uint)t3 >> 8) & 0xFF]
-          ^ T7[(uint)t5 & 0xFF];
-      }
+    for (uint r = 0; r < 10; r += 2) {
+      x[0] ^= (ulong)r ^ unchecked((ulong)-0x01L);
+      x[1] ^= (ulong)r ^ unchecked((ulong)-0x11L);
+      x[2] ^= (ulong)r ^ unchecked((ulong)-0x21L);
+      x[3] ^= (ulong)r ^ unchecked((ulong)-0x31L);
+      x[4] ^= (ulong)r ^ unchecked((ulong)-0x41L);
+      x[5] ^= (ulong)r ^ unchecked((ulong)-0x51L);
+      x[6] ^= (ulong)r ^ unchecked((ulong)-0x61L);
+      x[7] ^= (ulong)r ^ unchecked((ulong)-0x71L);
+      ulong t0 = T0[(uint)(x[1] >> 56)]
+        ^ T1[(uint)(x[3] >> 48) & 0xFF]
+        ^ T2[(uint)(x[5] >> 40) & 0xFF]
+        ^ T3[(uint)(x[7] >> 32) & 0xFF]
+        ^ T4[((uint)x[0] >> 24)]
+        ^ T5[((uint)x[2] >> 16) & 0xFF]
+        ^ T6[((uint)x[4] >> 8) & 0xFF]
+        ^ T7[(uint)x[6] & 0xFF];
+      ulong t1 = T0[(uint)(x[2] >> 56)]
+        ^ T1[(uint)(x[4] >> 48) & 0xFF]
+        ^ T2[(uint)(x[6] >> 40) & 0xFF]
+        ^ T3[(uint)(x[0] >> 32) & 0xFF]
+        ^ T4[((uint)x[1] >> 24)]
+        ^ T5[((uint)x[3] >> 16) & 0xFF]
+        ^ T6[((uint)x[5] >> 8) & 0xFF]
+        ^ T7[(uint)x[7] & 0xFF];
+      ulong t2 = T0[(uint)(x[3] >> 56)]
+        ^ T1[(uint)(x[5] >> 48) & 0xFF]
+        ^ T2[(uint)(x[7] >> 40) & 0xFF]
+        ^ T3[(uint)(x[1] >> 32) & 0xFF]
+        ^ T4[((uint)x[2] >> 24)]
+        ^ T5[((uint)x[4] >> 16) & 0xFF]
+        ^ T6[((uint)x[6] >> 8) & 0xFF]
+        ^ T7[(uint)x[0] & 0xFF];
+      ulong t3 = T0[(uint)(x[4] >> 56)]
+        ^ T1[(uint)(x[6] >> 48) & 0xFF]
+        ^ T2[(uint)(x[0] >> 40) & 0xFF]
+        ^ T3[(uint)(x[2] >> 32) & 0xFF]
+        ^ T4[((uint)x[3] >> 24)]
+        ^ T5[((uint)x[5] >> 16) & 0xFF]
+        ^ T6[((uint)x[7] >> 8) & 0xFF]
+        ^ T7[(uint)x[1] & 0xFF];
+      ulong t4 = T0[(uint)(x[5] >> 56)]
+        ^ T1[(uint)(x[7] >> 48) & 0xFF]
+        ^ T2[(uint)(x[1] >> 40) & 0xFF]
+        ^ T3[(uint)(x[3] >> 32) & 0xFF]
+        ^ T4[((uint)x[4] >> 24)]
+        ^ T5[((uint)x[6] >> 16) & 0xFF]
+        ^ T6[((uint)x[0] >> 8) & 0xFF]
+        ^ T7[(uint)x[2] & 0xFF];
+      ulong t5 = T0[(uint)(x[6] >> 56)]
+        ^ T1[(uint)(x[0] >> 48) & 0xFF]
+        ^ T2[(uint)(x[2] >> 40) & 0xFF]
+        ^ T3[(uint)(x[4] >> 32) & 0xFF]
+        ^ T4[((uint)x[5] >> 24)]
+        ^ T5[((uint)x[7] >> 16) & 0xFF]
+        ^ T6[((uint)x[1] >> 8) & 0xFF]
+        ^ T7[(uint)x[3] & 0xFF];
+      ulong t6 = T0[(uint)(x[7] >> 56)]
+        ^ T1[(uint)(x[1] >> 48) & 0xFF]
+        ^ T2[(uint)(x[3] >> 40) & 0xFF]
+        ^ T3[(uint)(x[5] >> 32) & 0xFF]
+        ^ T4[((uint)x[6] >> 24)]
+        ^ T5[((uint)x[0] >> 16) & 0xFF]
+        ^ T6[((uint)x[2] >> 8) & 0xFF]
+        ^ T7[(uint)x[4] & 0xFF];
+      ulong t7 = T0[(uint)(x[0] >> 56)]
+        ^ T1[(uint)(x[2] >> 48) & 0xFF]
+        ^ T2[(uint)(x[4] >> 40) & 0xFF]
+        ^ T3[(uint)(x[6] >> 32) & 0xFF]
+        ^ T4[((uint)x[7] >> 24)]
+        ^ T5[((uint)x[1] >> 16) & 0xFF]
+        ^ T6[((uint)x[3] >> 8) & 0xFF]
+        ^ T7[(uint)x[5] & 0xFF];
+      t0 ^= (ulong)(r + 1) ^ unchecked((ulong)-0x01L);
+      t1 ^= (ulong)(r + 1) ^ unchecked((ulong)-0x11L);
+      t2 ^= (ulong)(r + 1) ^ unchecked((ulong)-0x21L);
+      t3 ^= (ulong)(r + 1) ^ unchecked((ulong)-0x31L);
+      t4 ^= (ulong)(r + 1) ^ unchecked((ulong)-0x41L);
+      t5 ^= (ulong)(r + 1) ^ unchecked((ulong)-0x51L);
+      t6 ^= (ulong)(r + 1) ^ unchecked((ulong)-0x61L);
+      t7 ^= (ulong)(r + 1) ^ unchecked((ulong)-0x71L);
+      x[0] = T0[(uint)(t1 >> 56)]
+        ^ T1[(uint)(t3 >> 48) & 0xFF]
+        ^ T2[(uint)(t5 >> 40) & 0xFF]
+        ^ T3[(uint)(t7 >> 32) & 0xFF]
+        ^ T4[((uint)t0 >> 24)]
+        ^ T5[((uint)t2 >> 16) & 0xFF]
+        ^ T6[((uint)t4 >> 8) & 0xFF]
+        ^ T7[(uint)t6 & 0xFF];
+      x[1] = T0[(uint)(t2 >> 56)]
+        ^ T1[(uint)(t4 >> 48) & 0xFF]
+        ^ T2[(uint)(t6 >> 40) & 0xFF]
+        ^ T3[(uint)(t0 >> 32) & 0xFF]
+        ^ T4[((uint)t1 >> 24)]
+        ^ T5[((uint)t3 >> 16) & 0xFF]
+        ^ T6[((uint)t5 >> 8) & 0xFF]
+        ^ T7[(uint)t7 & 0xFF];
+      x[2] = T0[(uint)(t3 >> 56)]
+        ^ T1[(uint)(t5 >> 48) & 0xFF]
+        ^ T2[(uint)(t7 >> 40) & 0xFF]
+        ^ T3[(uint)(t1 >> 32) & 0xFF]
+        ^ T4[((uint)t2 >> 24)]
+        ^ T5[((uint)t4 >> 16) & 0xFF]
+        ^ T6[((uint)t6 >> 8) & 0xFF]
+        ^ T7[(uint)t0 & 0xFF];
+      x[3] = T0[(uint)(t4 >> 56)]
+        ^ T1[(uint)(t6 >> 48) & 0xFF]
+        ^ T2[(uint)(t0 >> 40) & 0xFF]
+        ^ T3[(uint)(t2 >> 32) & 0xFF]
+        ^ T4[((uint)t3 >> 24)]
+        ^ T5[((uint)t5 >> 16) & 0xFF]
+        ^ T6[((uint)t7 >> 8) & 0xFF]
+        ^ T7[(uint)t1 & 0xFF];
+      x[4] = T0[(uint)(t5 >> 56)]
+        ^ T1[(uint)(t7 >> 48) & 0xFF]
+        ^ T2[(uint)(t1 >> 40) & 0xFF]
+        ^ T3[(uint)(t3 >> 32) & 0xFF]
+        ^ T4[((uint)t4 >> 24)]
+        ^ T5[((uint)t6 >> 16) & 0xFF]
+        ^ T6[((uint)t0 >> 8) & 0xFF]
+        ^ T7[(uint)t2 & 0xFF];
+      x[5] = T0[(uint)(t6 >> 56)]
+        ^ T1[(uint)(t0 >> 48) & 0xFF]
+        ^ T2[(uint)(t2 >> 40) & 0xFF]
+        ^ T3[(uint)(t4 >> 32) & 0xFF]
+        ^ T4[((uint)t5 >> 24)]
+        ^ T5[((uint)t7 >> 16) & 0xFF]
+        ^ T6[((uint)t1 >> 8) & 0xFF]
+        ^ T7[(uint)t3 & 0xFF];
+      x[6] = T0[(uint)(t7 >> 56)]
+        ^ T1[(uint)(t1 >> 48) & 0xFF]
+        ^ T2[(uint)(t3 >> 40) & 0xFF]
+        ^ T3[(uint)(t5 >> 32) & 0xFF]
+        ^ T4[((uint)t6 >> 24)]
+        ^ T5[((uint)t0 >> 16) & 0xFF]
+        ^ T6[((uint)t2 >> 8) & 0xFF]
+        ^ T7[(uint)t4 & 0xFF];
+      x[7] = T0[(uint)(t0 >> 56)]
+        ^ T1[(uint)(t2 >> 48) & 0xFF]
+        ^ T2[(uint)(t4 >> 40) & 0xFF]
+        ^ T3[(uint)(t6 >> 32) & 0xFF]
+        ^ T4[((uint)t7 >> 24)]
+        ^ T5[((uint)t1 >> 16) & 0xFF]
+        ^ T6[((uint)t3 >> 8) & 0xFF]
+        ^ T7[(uint)t5 & 0xFF];
     }
   }
 
   /** @see DigestEngine */
   protected override void processBlock(byte[] data)
   {
-    for (int i = 0; i < 8; i++)
-    {
+    for (uint i = 0; i < 8; i ++) {
       M[i] = decodeBELong(data, i * 8);
       G[i] = M[i] ^ H[i];
     }
     doPermP(G);
     doPermQ(M);
-    for (int i = 0; i < 8; i++)
+    for (uint i = 0; i < 8; i ++)
       H[i] ^= G[i] ^ M[i];
   }
 
@@ -670,4 +657,5 @@ public abstract class GroestlSmallCore : DigestEngine
   {
     return "Groestl-" + (getDigestLength() << 3);
   }
+}
 }

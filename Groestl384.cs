@@ -1,4 +1,4 @@
-// $Id: Groestl256.java 198 2010-05-27 16:45:04Z tp $
+// $Id: Groestl384.java 198 2010-05-27 16:45:04Z tp $
 
 using System;
 
@@ -6,7 +6,7 @@ namespace CryptoHash
 {
 
 /**
- * <p>This class implements the Groestl-256 digest algorithm under the
+ * <p>This class implements the Groestl-384 digest algorithm under the
  * {@link Digest} API.</p>
  *
  * <pre>
@@ -40,25 +40,25 @@ namespace CryptoHash
  * @author    Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
  */
 
-public class Groestl256 : GroestlSmallCore {
+public class Groestl384 : GroestlBigCore {
 
   /**
    * Create the engine.
    */
-  public Groestl256()
+  public Groestl384()
   {
   }
 
   /** @see Digest */
   public override uint getDigestLength()
   {
-    return 32;
+    return 48;
   }
 
   /** @see Digest */
   public override Digest copy()
   {
-    return copyState(new Groestl256());
+    return copyState(new Groestl384());
   }
 }
 }

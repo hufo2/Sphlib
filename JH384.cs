@@ -1,4 +1,4 @@
-// $Id: Groestl256.java 198 2010-05-27 16:45:04Z tp $
+// $Id: JH384.java 255 2011-06-07 19:50:20Z tp $
 
 using System;
 
@@ -6,7 +6,7 @@ namespace CryptoHash
 {
 
 /**
- * <p>This class implements the Groestl-256 digest algorithm under the
+ * <p>This class implements the JH-384 digest algorithm under the
  * {@link Digest} API.</p>
  *
  * <pre>
@@ -36,29 +36,46 @@ namespace CryptoHash
  * ===========================(LICENSE END)=============================
  * </pre>
  *
- * @version   $Revision: 198 $
+ * @version   $Revision: 255 $
  * @author    Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
  */
 
-public class Groestl256 : GroestlSmallCore {
+public class JH384 : JHCore {
+
+  private static readonly  ulong[] IV = {
+    0x481e3bc6d813398aL, 0x6d3b5e894ade879bL,
+    0x63faea68d480ad2eL, 0x332ccb21480f8267L,
+    0x98aec84d9082b928L, 0xd455ea3041114249L,
+    0x36f555b2924847ecL, 0xc7250a93baf43ce1L,
+    0x569b7f8a27db454cL, 0x9efcbd496397af0eL,
+    0x589fc27d26aa80cdL, 0x80c08b8c9deb2edaL,
+    0x8a7981e8f8d5373aL, 0xf43967adddd17a71L,
+    0xa9b4d3bda475d394L, 0x976c3fba9842737fL
+  };
 
   /**
    * Create the engine.
    */
-  public Groestl256()
+  public JH384()
   {
-  }
-
-  /** @see Digest */
-  public override uint getDigestLength()
-  {
-    return 32;
   }
 
   /** @see Digest */
   public override Digest copy()
   {
-    return copyState(new Groestl256());
+    return copyState(new JH384());
+  }
+
+  /** @see Digest */
+  public override uint getDigestLength()
+  {
+    return 48;
+  }
+
+  /** @see JHCore */
+  public override ulong[] getIV()
+  {
+    return IV;
   }
 }
 }
