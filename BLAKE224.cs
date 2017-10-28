@@ -1,4 +1,4 @@
-// $Id: Groestl256.java 198 2010-05-27 16:45:04Z tp $
+// $Id: BLAKE224.java 252 2011-06-07 17:55:14Z tp $
 
 using System;
 
@@ -6,7 +6,7 @@ namespace CryptoHash
 {
 
 /**
- * <p>This class implements the Groestl-256 digest algorithm under the
+ * <p>This class implements the BLAKE-224 digest algorithm under the
  * {@link Digest} API.</p>
  *
  * <pre>
@@ -36,29 +36,41 @@ namespace CryptoHash
  * ===========================(LICENSE END)=============================
  * </pre>
  *
- * @version   $Revision: 198 $
+ * @version   $Revision: 252 $
  * @author    Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
  */
 
-public class Groestl256 : GroestlSmallCore {
+public class BLAKE224 : BLAKESmallCore {
 
   /**
    * Create the engine.
    */
-  public Groestl256()
+  public BLAKE224()
   {
+  }
+
+  /** The initial value for BLAKE-224. */
+  private static readonly  uint[] initVal = {
+    0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939,
+    0xFFC00B31, 0x68581511, 0x64F98FA7, 0xBEFA4FA4
+  };
+
+  /** @see BLAKESmallCore */
+  public override uint[] getInitVal()
+  {
+    return initVal;
   }
 
   /** @see Digest */
   public override uint getDigestLength()
   {
-    return 32;
+    return 28;
   }
 
   /** @see Digest */
   public override Digest copy()
   {
-    return copyState(new Groestl256());
+    return copyState(new BLAKE224());
   }
 }
 }

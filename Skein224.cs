@@ -1,4 +1,4 @@
-// $Id: Groestl256.java 198 2010-05-27 16:45:04Z tp $
+// $Id: Skein224.java 253 2011-06-07 18:33:10Z tp $
 
 using System;
 
@@ -6,8 +6,9 @@ namespace CryptoHash
 {
 
 /**
- * <p>This class implements the Groestl-256 digest algorithm under the
- * {@link Digest} API.</p>
+ * <p>This class implements the Skein-224 digest algorithm under the
+ * {@link Digest} API. In the Skein specification, that function is
+ * called under the full name "Skein-512-224".</p>
  *
  * <pre>
  * ==========================(LICENSE BEGIN)============================
@@ -36,29 +37,43 @@ namespace CryptoHash
  * ===========================(LICENSE END)=============================
  * </pre>
  *
- * @version   $Revision: 198 $
+ * @version   $Revision: 253 $
  * @author    Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
  */
 
-public class Groestl256 : GroestlSmallCore {
+public class Skein224 : SkeinBigCore {
 
   /**
    * Create the engine.
    */
-  public Groestl256()
+  public Skein224()
   {
+  }
+
+  /** The initial value for Skein-224. */
+  private static readonly  ulong[] initVal = {
+    0xCCD0616248677224L, 0xCBA65CF3A92339EFL,
+    0x8CCD69D652FF4B64L, 0x398AED7B3AB890B4L,
+    0x0F59D1B1457D2BD0L, 0x6776FE6575D4EB3DL,
+    0x99FBC70E997413E9L, 0x9E2CFCCFE1C41EF7L
+  };
+
+  /** @see SkeinBigCore */
+  public override ulong[] getInitVal()
+  {
+    return initVal;
   }
 
   /** @see Digest */
   public override uint getDigestLength()
   {
-    return 32;
+    return 28;
   }
 
-  /** @see Digest */
-  public override Digest copy()
+  /** @see SkeinBigCore */
+  public override SkeinBigCore dup()
   {
-    return copyState(new Groestl256());
+    return new Skein224();
   }
 }
 }

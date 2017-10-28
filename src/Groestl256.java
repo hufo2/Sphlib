@@ -1,9 +1,6 @@
 // $Id: Groestl256.java 198 2010-05-27 16:45:04Z tp $
 
-using System;
-
-namespace CryptoHash
-{
+package fr.cryptohash;
 
 /**
  * <p>This class implements the Groestl-256 digest algorithm under the
@@ -40,25 +37,25 @@ namespace CryptoHash
  * @author    Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
  */
 
-public class Groestl256 : GroestlSmallCore {
+public class Groestl256 extends GroestlSmallCore {
 
-  /**
-   * Create the engine.
-   */
-  public Groestl256()
-  {
-  }
+	/**
+	 * Create the engine.
+	 */
+	public Groestl256()
+	{
+		super();
+	}
 
-  /** @see Digest */
-  public override uint getDigestLength()
-  {
-    return 32;
-  }
+	/** @see Digest */
+	public int getDigestLength()
+	{
+		return 32;
+	}
 
-  /** @see Digest */
-  public override Digest copy()
-  {
-    return copyState(new Groestl256());
-  }
-}
+	/** @see Digest */
+	public Digest copy()
+	{
+		return copyState(new Groestl256());
+	}
 }
